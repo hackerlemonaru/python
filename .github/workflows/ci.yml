@@ -29,3 +29,29 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      # Includes tests/test_vectors.py, which replays the vendored
+      # conformance vectors in-process. A Python developer gets a
+      # contract failure without needing Node installed.
+      - run: PYTHONPATH=src python -m unittest discover -s tests -v
+
+  conformance:
+    name: conformance harness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20.x }
+
+      # META-003: an SDK must run the shared harness against its driver.
+      # The harness and vectors live in the Node SDK, the reference
+      # implementation. restlesshq/node is public, so the default
+      # GITHUB_TOKEN can check it out even from this private repo.
+      #
+      # This job stays red until the conformance kit lands on node's main
+      # branch, because spec/ does not exist there yet. The in-process
+      # replay in the `test` job above covers the same vectors meanwhile,
+      # from the pinned copy in spec/.
+      - name: Check out the reference SDK
+        uses: actions/checkout@v4
