@@ -1,0 +1,27 @@
+name: Release
+
+# Publishing is driven entirely by tags. Pushing `v0.1.0` builds, verifies and
+# uploads 0.1.0; nothing else publishes, and no step here can be triggered by
+# hand against an arbitrary commit.
+#
+# Authentication is OIDC (PyPI "trusted publishing"), so there is no API token
+# in this repo's secrets and none on anyone's laptop. PyPI is configured to
+# trust exactly this repo, this workflow filename and the `pypi` environment;
+# changing any of those three means updating the publisher on PyPI too.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  # Everything that can fail should fail HERE, before the upload job, because a
+  # PyPI version number can never be reused. A yanked release still burns it.
+  verify:
+    name: build and verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
