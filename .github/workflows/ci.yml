@@ -55,3 +55,24 @@ jobs:
       # from the pinned copy in spec/.
       - name: Check out the reference SDK
         uses: actions/checkout@v4
+        with:
+          repository: restlesshq/node
+          path: .reference
+
+      - name: Replay conformance vectors
+        run: |
+          PYTHONPATH=src node .reference/spec/harness/run-vectors.mjs \
+            --json conformance.json -- python -m restless._conformance
+
+      - name: Differential fuzz against the reference
+        run: |
+          cd .reference && npm ci && npm run spec:driver && cd ..
+          PYTHONPATH=src node .reference/spec/harness/fuzz.mjs \
+            --ref "node .reference/spec/driver/.build/node.js" \
+            --test "python -m restless._conformance" \
+            --iterations 20000
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: conformance-report
+          path: conformance.json
