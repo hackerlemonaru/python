@@ -81,3 +81,37 @@ jobs:
         with:
           name: dist
           path: dist/
+
+  publish:
+    name: publish to PyPI
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # required for OIDC; this is what replaces an API token
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  # Publishing can succeed while the result is still unusable, so the last word
+  # comes from the real index rather than from the upload step's exit code.
+  smoke:
+    name: install from PyPI
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the published version and use it
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          for attempt in 1 2 3 4 5 6; do
+            pip install "restless-sdk==$version" && break
+            echo "not visible yet, retrying ($attempt)"; sleep 20
+          done
+          python -c '
+          import restless, pathlib
