@@ -115,3 +115,6 @@ jobs:
           done
           python -c '
           import restless, pathlib
+          print("installed", restless.__version__)
+          assert (pathlib.Path(restless.__file__).parent / "install.md").is_file()
+          '
