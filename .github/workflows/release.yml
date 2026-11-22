@@ -62,3 +62,22 @@ jobs:
 
       - run: twine check dist/*
 
+      # Install the built wheel the way a user would, into an environment that
+      # has never seen this source tree, and exercise it. Running the test suite
+      # against ./src would pass even if the package shipped empty.
+      - name: Clean-environment install
+        run: |
+          python -m venv /tmp/smoke
+          /tmp/smoke/bin/pip install dist/*.whl
+          /tmp/smoke/bin/python -c '
+          import restless, pathlib, importlib.metadata as md
+          assert md.version("restless-sdk") == restless.__version__, "metadata disagrees with __version__"
+          assert (pathlib.Path(restless.__file__).parent / "install.md").is_file(), "install.md unreachable"
+          assert restless.mask("sk_test_abcd1234").startswith("sha512-"), "mask() broken"
+          print("ok", restless.__version__)
+          '
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
