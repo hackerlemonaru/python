@@ -66,3 +66,4 @@ with the reference. They are the reason this SDK is byte-compatible.
 | SAMPLE-002 | `math.floor(r * 10000 + 0.5)`, never `round()`, which rounds half to even. |
 | SAMPLE-010, SAMPLE-021 | Methods are uppercased with an ASCII-only table. `str.upper()` turns `"ß"` into `"SS"`. Key and path regexes use `re.fullmatch`, for the PRIM-005 reason. |
 | SAMPLE-032 | One `random.random()` draw per request, in `CaptureEngine.sample()`. WSGI decides after the response is buffered, before calling the server's `start_response`; ASGI decides on `http.response.start`, so a streamed response is decided before its first header leaves. |
+| FP-044 | Stack frames are `File "...", line N, in fn`; skips `site-packages`, `dist-packages`, `<frozen`, `/lib/python`. |
