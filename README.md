@@ -125,3 +125,23 @@ real route, read after the response.
   )
   ```
 
+  Keys are a method (or `*` for any) and the route pattern your framework
+  matched; `{id}` and `:id` are the same. The same `sampling` block can live
+  in `.restless/settings.json`, and the argument wins per route. A request
+  on an `"off"` route, or a success on an `"errors"` route, sends nothing
+  and gets no `x-request-id`, `x-debug` or `x-api-feedback` header. An
+  invalid value never raises: it falls back to `"on"` and says so under
+  `DEBUG=restless`.
+
+## Never breaks your API
+
+Observability must not take down a production request path. Upload failures,
+callback exceptions, unserializable bodies and malformed input are all caught
+and swallowed (surfaced only under `DEBUG=restless`). Uploads happen on
+background threads, at most 4 at a time, each with a 10 s timeout, so a slow
+ingest cannot pile up threads or sockets in your process. When the ingest is
+overloaded and answers `503` or `429`, the batch is retried up to twice,
+honouring `Retry-After`. Failures it may already have stored (other statuses,
+timeouts, dropped connections) are not retried, so nothing is logged twice.
+
+## Environment variables
