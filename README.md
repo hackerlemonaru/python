@@ -61,3 +61,39 @@ Then wrap your app:
 # Flask / Django / any WSGI
 app.wsgi_app = client.wsgi(app.wsgi_app)
 
+# FastAPI / Starlette / any ASGI
+app = client.asgi(app)
+```
+
+## The request view
+
+The callback receives a read-only `RequestInfo`, identical under WSGI and
+ASGI, so the same callback works whichever you are on.
+
+| accessor | what |
+|---|---|
+| `request.header(name)` | One header, case-insensitive. `request["authorization"]` is an alias. |
+| `request.headers` | All of them, as a case-insensitive mapping. |
+| `request.method` | `"GET"`, `"POST"`, ... |
+| `request.path` | Path, including any mount prefix. |
+| `request.query_string` | Raw query string, without the `?`. |
+| `request.url` | Full URL, as the capture records it. |
+| `request.environ` / `request.scope` | The raw WSGI environ or ASGI scope; the other is `None`. |
+
+Nothing is hidden by the wrapper: anything it does not model is still on
+`request.environ` / `request.scope`.
+
+`request.route` is normally `None` here. The callback runs before your
+application, so no router has matched yet. The captured log still gets the
+real route, read after the response.
+
+## What you get
+
+- **Lazy owner enrichment.** The `enrich` callback runs on the first request
+  from each owner id and then caches, so 100 requests from one workspace do
+  not mean 100 database lookups.
+- **Safe by default.** `Authorization`, `Cookie`, `password`, `token`, `ssn`
+  and friends are redacted before anything leaves your process. Bodies with
+  nothing to redact are passed through untouched, so your payloads are not
+  reserialized on the way out.
+- **Error triage.** Every response gets an `x-log-url` header pointing at
