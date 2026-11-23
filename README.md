@@ -97,3 +97,31 @@ real route, read after the response.
   nothing to redact are passed through untouched, so your payloads are not
   reserialized on the way out.
 - **Error triage.** Every response gets an `x-log-url` header pointing at
+  the captured log, an `x-debug` header with the `npx api debug <id>`
+  command, and an `x-api-feedback` header with the `npx api feedback <id>`
+  command for filing feedback about that exact request. 4xx/5xx responses
+  also get a `debug` block in the JSON body. Browser callers can only read
+  these headers if your API lists them in `Access-Control-Expose-Headers`
+  (`x-log-url, x-debug, x-api-feedback`). If someone attaches a "next steps"
+  message to an error in the dashboard, the SDK injects it as
+  `debug.recovery`, read synchronously from an in-process cache, never
+  blocking the response on a network call.
+- **Blocking.** Return `{"block": True}` from the setup callback to reject a
+  request before your handler runs.
+- **Sampling.** Send less for noisy endpoints without losing your counts.
+  Each endpoint is `"on"` (the default), `"off"`, `"errors"` (only status
+  >= 400), or a rate such as `0.1`: that fraction of successful requests is
+  logged in full and the rest without bodies, so counts, latency and
+  per-customer usage stay exact. A rate never applies to errors.
+
+  ```python
+  client = restless.Restless(
+      os.environ["RESTLESS_KEY"],
+      sampling={
+          "default": "on",
+          "routes": {"GET /health": "off", "GET /status": "errors",
+                     "GET /pets": 0.1, "* /pets/{id}": 0.5},
+      },
+  )
+  ```
+
