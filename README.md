@@ -145,3 +145,18 @@ honouring `Retry-After`. Failures it may already have stored (other statuses,
 timeouts, dropped connections) are not retried, so nothing is logged twice.
 
 ## Environment variables
+
+| variable | purpose |
+|---|---|
+| `RESTLESS_KEY` | Your project API key, if you do not pass one explicitly. |
+| `RESTLESS_BASE_URL` | Override the ingest URL (self-hosted or staging). |
+| `DEBUG=restless` | Print upload diagnostics to stderr. |
+
+## Conformance
+
+This SDK implements version 1.4.0 of the Restless SDK Contract at level L2,
+and is verified against the shared cross-language conformance vectors. See
+[CONFORMANCE.md](./CONFORMANCE.md).
+
+## License
+MIT
