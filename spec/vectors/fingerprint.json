@@ -1,0 +1,15 @@
+{
+  "$generated": "GENERATED FILE - do not edit by hand. Inputs live in spec/cases.ts; run `npm run spec:vectors` to regenerate.",
+  "$contract": "spec/CONTRACT.md",
+  "specVersion": "1.4.0",
+  "cases": [
+    {
+      "id": "fp/404-parameterized",
+      "requirement": "FP-013",
+      "op": "fingerprint",
+      "input": {
+        "status": 404,
+        "method": "GET",
+        "route": "/car/{id}"
+      },
+      "expected": {
