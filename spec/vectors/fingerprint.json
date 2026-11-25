@@ -13,3 +13,20 @@
         "route": "/car/{id}"
       },
       "expected": {
+        "strategy": "resource",
+        "key": "404:resource"
+      }
+    },
+    {
+      "id": "fp/404-concrete-id-is-parameterized",
+      "requirement": "FP-014",
+      "op": "fingerprint",
+      "input": {
+        "status": 404,
+        "method": "GET",
+        "route": "/car/123"
+      },
+      "expected": {
+        "strategy": "resource",
+        "key": "404:resource"
+      },
