@@ -30,3 +30,22 @@
         "strategy": "resource",
         "key": "404:resource"
       },
+      "note": "Normalization runs BEFORE the parameter test, so a concrete id counts."
+    },
+    {
+      "id": "fp/404-collapses-across-routes",
+      "requirement": "FP-013",
+      "op": "fingerprint",
+      "input": {
+        "status": 404,
+        "method": "DELETE",
+        "route": "/user/{id}/posts/{postId}"
+      },
+      "expected": {
+        "strategy": "resource",
+        "key": "404:resource"
+      }
+    },
+    {
+      "id": "fp/404-paramless-route",
+      "requirement": "FP-013",
