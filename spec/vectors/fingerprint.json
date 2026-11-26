@@ -49,3 +49,31 @@
     {
       "id": "fp/404-paramless-route",
       "requirement": "FP-013",
+      "op": "fingerprint",
+      "input": {
+        "status": 404,
+        "method": "GET",
+        "route": "/users"
+      },
+      "expected": {
+        "strategy": "endpoint",
+        "key": "404:endpoint"
+      }
+    },
+    {
+      "id": "fp/404-no-route",
+      "requirement": "FP-014",
+      "op": "fingerprint",
+      "input": {
+        "status": 404,
+        "method": "GET"
+      },
+      "expected": {
+        "strategy": "endpoint",
+        "key": "404:endpoint"
+      }
+    },
+    {
+      "id": "fp/404-header-code-does-not-win",
+      "requirement": "FP-012",
+      "op": "fingerprint",
