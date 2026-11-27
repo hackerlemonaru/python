@@ -186,3 +186,40 @@
         "responseHeaders": {
           "x-restless-error-code": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         }
+      },
+      "expected": {
+        "strategy": "route-only",
+        "key": "400:POST:/pay"
+      }
+    },
+    {
+      "id": "fp/header-accepts-64",
+      "requirement": "FP-015",
+      "op": "fingerprint",
+      "input": {
+        "status": 400,
+        "responseHeaders": {
+          "x-restless-error-code": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "expected": {
+        "strategy": "header",
+        "key": "400:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "id": "fp/body-code",
+      "requirement": "FP-016",
+      "op": "fingerprint",
+      "input": {
+        "status": 402,
+        "method": "POST",
+        "route": "/pay",
+        "responseBody": {
+          "code": "card_declined"
+        }
+      },
+      "expected": {
+        "strategy": "body-code",
+        "key": "402:card_declined"
+      }
