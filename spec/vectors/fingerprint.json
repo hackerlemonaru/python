@@ -110,3 +110,35 @@
     },
     {
       "id": "fp/header-code",
+      "requirement": "FP-010",
+      "op": "fingerprint",
+      "input": {
+        "status": 400,
+        "method": "GET",
+        "route": "/car/{id}",
+        "responseHeaders": {
+          "x-restless-error-code": "invalid_param"
+        }
+      },
+      "expected": {
+        "strategy": "header",
+        "key": "400:invalid_param"
+      }
+    },
+    {
+      "id": "fp/header-case-insensitive",
+      "requirement": "FP-017",
+      "op": "fingerprint",
+      "input": {
+        "status": 400,
+        "responseHeaders": {
+          "X-Restless-Error-Code": "invalid_param"
+        }
+      },
+      "expected": {
+        "strategy": "header",
+        "key": "400:invalid_param"
+      }
+    },
+    {
+      "id": "fp/header-rejects-sentence",
