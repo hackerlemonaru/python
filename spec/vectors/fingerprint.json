@@ -158,3 +158,31 @@
       },
       "note": "Not identifier-shaped, so it is not a code and the ladder continues."
     },
+    {
+      "id": "fp/header-rejects-leading-digit",
+      "requirement": "FP-015",
+      "op": "fingerprint",
+      "input": {
+        "status": 400,
+        "method": "POST",
+        "route": "/pay",
+        "responseHeaders": {
+          "x-restless-error-code": "4xx_bad"
+        }
+      },
+      "expected": {
+        "strategy": "route-only",
+        "key": "400:POST:/pay"
+      }
+    },
+    {
+      "id": "fp/header-rejects-too-long",
+      "requirement": "FP-015",
+      "op": "fingerprint",
+      "input": {
+        "status": 400,
+        "method": "POST",
+        "route": "/pay",
+        "responseHeaders": {
+          "x-restless-error-code": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
