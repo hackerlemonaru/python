@@ -77,3 +77,36 @@
       "id": "fp/404-header-code-does-not-win",
       "requirement": "FP-012",
       "op": "fingerprint",
+      "input": {
+        "status": 404,
+        "method": "GET",
+        "route": "/car/{id}",
+        "responseHeaders": {
+          "x-restless-error-code": "not_found"
+        }
+      },
+      "expected": {
+        "strategy": "resource",
+        "key": "404:resource"
+      },
+      "note": "404 is intercepted before the header strategy. A generic not_found must not re-collapse the two buckets."
+    },
+    {
+      "id": "fp/404-body-code-does-not-win",
+      "requirement": "FP-012",
+      "op": "fingerprint",
+      "input": {
+        "status": 404,
+        "method": "GET",
+        "route": "/users",
+        "responseBody": {
+          "code": "not_found"
+        }
+      },
+      "expected": {
+        "strategy": "endpoint",
+        "key": "404:endpoint"
+      }
+    },
+    {
+      "id": "fp/header-code",
