@@ -142,3 +142,19 @@
     },
     {
       "id": "fp/header-rejects-sentence",
+      "requirement": "FP-015",
+      "op": "fingerprint",
+      "input": {
+        "status": 400,
+        "method": "POST",
+        "route": "/pay",
+        "responseHeaders": {
+          "x-restless-error-code": "Your card was declined."
+        }
+      },
+      "expected": {
+        "strategy": "route-only",
+        "key": "400:POST:/pay"
+      },
+      "note": "Not identifier-shaped, so it is not a code and the ladder continues."
+    },
